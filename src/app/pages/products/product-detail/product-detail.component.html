@@ -1,0 +1,24 @@
+<nb-card>
+  <nb-card-header>
+    Product Details
+  </nb-card-header>
+  <nb-card-body>
+    <form #editProductForm="ngForm" (keyup)="formChange()">
+      <span class="custom-control-description">{{editingProduct.id}}</span>
+      <span class="custom-control-description custom-add-description">Product name</span>
+      <input class="form-control custom-add-product-input" [autofocus] type="text" id="name" name="productName" [(ngModel)]="editingProduct.name" #productName="ngModel" maxlength="200"
+          pattern="^[^/\\]*">
+      <span class="custom-control-description custom-add-description">Product description</span>
+      <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="editingProduct.description" #productName="ngModel">
+      <span class="custom-control-description">{{editingProduct.code}}</span>
+      <span class="custom-control-description">{{editingProduct.brand}}</span>
+      <span class="custom-control-description">{{editingProduct.type}}</span>
+      <span class="custom-control-description">{{editingProduct.category}}</span>
+      <span class="custom-control-description">{{editingProduct.created_at}}</span>
+      <span class="custom-control-description">{{editingProduct.updated_at}}</span>
+
+      <button type="button" class="btn btn-outline-warning editProductButtons" (click)=cancelEditing()>Cancel</button>
+      <button type="button" class="btn btn-outline-primary" [disabled]="productName.errors || !difference" (click)="onEditProduct()">Done</button>
+    </form>
+  </nb-card-body>
+</nb-card>

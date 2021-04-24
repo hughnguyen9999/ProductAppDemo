@@ -1,0 +1,33 @@
+@import 'src/app/@theme/styles/themes';
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: #808080;
+}
+
+.modal-header {
+  background-color:#F37E41;
+  span {
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+}
+
+.modal-body {
+  background-color:#d3d3d3;
+  textarea {
+    height: 10rem;
+  }
+  label {
+    width: auto;
+  }
+}
+
+.modal-body.alert {
+  background-color: unset;
+}
+
+.addButton {
+  margin-right: 1rem;
+}

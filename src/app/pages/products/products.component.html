@@ -1,0 +1,33 @@
+<nb-card>
+  <nb-card-header>Products</nb-card-header>
+  <nb-card-body>
+    <ngx-datatable
+      #myTable
+      class="material"
+      [columnMode]="'flex'"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      rowHeight="auto"
+      [rows]="products"
+      [limit]="5"
+      [sorts]="[{prop:'name', dir:'asc'}]"
+      [selected]="selectedProducts"
+      [selectionType]="'multi'"
+      (select)="onSelect($event)"
+      >
+      <ngx-datatable-column name="Name" [flexGrow]="3">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <strong>{{ row.name }}</strong>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="Description" [flexGrow]="7">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <strong>{{ row.description }}</strong>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+    <div class="custom-row">
+      <button class="btn btn-outline-primary btn-md btn-semi-round" (click)="onAddProduct()">Add Product</button>
+    </div>
+  </nb-card-body>
+</nb-card>

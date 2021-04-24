@@ -1,0 +1,35 @@
+<nb-card>
+  <nb-card-header>
+    Add Product
+  </nb-card-header>
+  <nb-card-body>
+    <form #addProductForm="ngForm" (keyup)="formChange()">
+      <span class="custom-control-description custom-add-description">Input the product name</span>
+      <input class="form-control custom-add-product-input" [autofocus] type="text" id="name" name="productName" [(ngModel)]="inputProduct.name" #productName="ngModel" maxlength="100" (keyup)="productNameKeyUp($event)" (paste)="productNamePaste($event)" (keydown)="productNameKeyDown($event)"
+          (change)="productNameChange($event)" pattern="^[^/\\]*" customAutofocus>
+      <div *ngIf="productName.errors && (productName.dirty || productName.touched)" class="alert alert-danger">
+        <div [hidden]="!productName.errors?.pattern">
+          This character {{inputCharacters[inputCharacters.length - 1]}} is not allowed
+        </div>
+      </div>
+      <div *ngIf="maxProductNameReach" class="alert alert-warning">
+        <div [hidden]="!maxProductNameReach">
+          The maximum characters limit (100 characters) has been reached
+        </div>
+      </div>
+      <span class="custom-control-description custom-add-description">Product description</span>
+      <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="inputProduct.description" #productName="ngModel">
+      <span class="custom-control-description custom-add-description">Product Brand</span>
+      <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="inputProduct.brand" #productName="ngModel">
+      <span class="custom-control-description custom-add-description">Product type</span>
+      <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="inputProduct.type" #productName="ngModel">
+      <span class="custom-control-description custom-add-description">Product category</span>
+      <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="inputProduct.category" #productName="ngModel">
+      <span class="custom-control-description custom-add-description">Product description</span>
+
+      <button type="button" [disabled]="productName.errors || isEmpty" class="btn btn-outline-warning" style="float:right;" (click)="addProduct()">Add</button>
+      <button type="button" class="btn btn-outline-warning" (click)=cancelAdding()>Cancel</button>
+    </form>
+  </nb-card-body>
+</nb-card>
+
