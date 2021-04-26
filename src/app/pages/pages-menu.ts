@@ -4,7 +4,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Products',
     icon: 'layout-outline',
-    link: '/pages/products',
+    link: '/products/products-list',
     home: true,
   },
 

@@ -8,112 +8,42 @@ import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'add-product',
+  styleUrls: ['../products.component.scss'],
   templateUrl: 'add-product.component.html'
 })
 
 export class AddProductComponent implements OnInit {
   inputProduct : Product = this.productsService.createEmptyProduct();
-  newProduct: any;
-  productExist: boolean;
-  nameDisabled: boolean;
-  pathDisabled: boolean;
-  inputCharacter: string;
-  maxProductNameReach: boolean = false;
-  productNameValid: boolean = true;
-  maxproductPathReach: boolean;
   formChanged: boolean;
   done: boolean = false;
-  invalidKeys: string[] = ['/','\\'];
-  inputCharacters: string[] = [];
   isEmpty: boolean = false;
 
-  constructor(private productsService: ProductsService, private router: Router, private shareDataService: ShareDataService) { }
+  constructor(
+    private productsService: ProductsService,
+    private router: Router,
+    private shareDataService: ShareDataService,
+    private toastrService: NbToastrService) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   // add product after get the infomation
-  addProduct() {
+  addProduct(): void {
     this.productsService.addProduct(this.inputProduct).subscribe(
-      result => {
-      this.newProduct = result;
-      this.shareDataService.setData('selectedProduct', this.newProduct);
-      this.router.navigate(['cftp/products']);
+      (result: any) => {
+        const newProduct = result.product;
+        this.shareDataService.setData('selectedProduct', newProduct);
+        this.done = true;
+        this.showToast('success', newProduct.name);
+        this.router.navigate(['products-list']);
       error => { this.productsService.handleError(error); }
       }
     );
   }
 
   // cancel adding product and back to products page
-  cancelAdding() {
+  cancelAdding(): void {
     this.router.navigate(['/products']);
   }
-
-  //check if the product name and path is empty or not
-  checkEmptyProductName(productName) {
-    if (productName.trim() == '') {
-        this.isEmpty = true;
-    } else {
-        this.isEmpty = false;
-    }
-  }
-
-    // paste during input product name
-  productNamePaste(event) {
-    // prevent user input empty username
-    let productName = event.clipboardData.getData('text/plain');
-    // show characters which is not allowed
-    if (event.key != "Shift") {
-      this.inputCharacter = event.key;
-      }
-      // prevent user input empty username
-      if (productName == '') {
-      this.productExist = false;
-      }
-      // warning user about max length has reached
-      this.maxProductNameReach = false;
-      if (productName.length >= 100) {
-      this.maxProductNameReach = true;
-      this.productExist = false;
-      }
-    this.inputCharacters = this.inputCharacters.filter(i => productName.includes(i));
-    this.checkEmptyProductName(productName);
-  }
-
-    // key down during input product name
-    productNameKeyDown(event) {
-      // show characters which is not allowed
-      if ((event.key !== "Shift") && (this.invalidKeys.includes(event.key))) {
-      this.inputCharacters.push(event.key);
-      }
-    }
-
-    // key up during input product name
-    productNameKeyUp(event) {
-      //show characters which is not allowed
-      if (event.key != "Shift") {
-      this.inputCharacter = event.key;
-      }
-      // prevent user input empty username
-      if (this.inputProduct.name == '') {
-      this.productExist = false;
-      this.inputProduct.name = event.target.value.trim();
-      }
-      // warning user about max length has reached
-      this.maxProductNameReach = false;
-      if (this.inputProduct.name.length >= 100) {
-      this.maxProductNameReach = true;
-      this.productExist = false;
-      }
-      this.inputCharacters = this.inputCharacters.filter(i => this.inputProduct.name.includes(i));
-      this.checkEmptyProductName(this.inputProduct.name);
-    }
-
-    // trim the userName after change
-    productNameChange(event) {
-      this.inputProduct.name = event.target.value.trim();
-      this.formChange();
-    }
 
   //warning when browsing away during editing
   @HostListener('window:beforeunload')
@@ -126,7 +56,16 @@ export class AddProductComponent implements OnInit {
   }
 
   // check if there is any value pending for save
-  formChange() {
+  formChange(): void {
     this.formChanged = true;
+  }
+
+  // show toast after a product has been created successfully
+  showToast(status: string, productName: string): void {
+    var position: any = 'bottom-end';
+    this.toastrService.show(
+      'The product ' + productName + ' has been added successfully',
+      'Success',
+      { position, status });
   }
 }

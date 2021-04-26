@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
+
 export class ShareDataService {
 
   count: number = 0;
-  constructor() { }
 
   setData(name: string, data: any) {
     localStorage.setItem(name, JSON.stringify(data));

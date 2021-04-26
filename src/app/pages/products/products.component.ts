@@ -1,52 +1,18 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ProductsService } from './products.service';
-import { Product } from './product/product';
-import { Router } from '@angular/router';
-import { ShareDataService } from './share-data.service';
-
+import { Component } from '@angular/core';
+import { MENU_ITEMS } from '../pages-menu';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  selector: 'products',
+  styleUrls: ['products.component.scss'],
+  template: `
+    <ngx-one-column-layout>
+      <nb-menu [items]="menu"></nb-menu>
+      <router-outlet></router-outlet>
+    </ngx-one-column-layout>
+  `,
 })
 
-export class ProductsComponent implements OnInit {
-  @ViewChild('myTable') table: any;
-    products: Product[] = [];
-    selectedProduct: Product = this.productsService.createEmptyProduct();
-    selectedProducts: Product[] = [];
-    addProductUrl: string = "/add-product";
-    productDetailUrl: string = "/pages/roduct-detail";
+export class ProductsComponent {
 
-  constructor(private productsService: ProductsService, private shareDataService: ShareDataService, private router: Router) { }
-
-  ngOnInit() {
-    this.productsService.getProducts().subscribe(
-      (data: any[]) => { console.log('abc', data); this.products = data },
-      error => { console.error(error) }
-    );
-  }
-
-  onDeleteConfirm(event): void {
-    if (window.confirm('Are you sure you want to delete?')) {
-      this.productsService.deleteProduct(event.data.id).subscribe();
-      event.confirm.resolve();
-    } else {
-      event.confirm.reject();
-    }
-  }
-
-  onSelect(event) {
-    this.selectedProducts = event.selected;
-    this.selectedProduct = this.selectedProducts[this.selectedProducts.length - 1];
-    this.shareDataService.setData('selectedProduct', this.selectedProduct);
-    this.router.navigateByUrl(this.productDetailUrl);
-  }
-
-  onAddProduct() {
-    this.router.navigateByUrl(this.addProductUrl);
-  }
-
+  menu = MENU_ITEMS;
 }

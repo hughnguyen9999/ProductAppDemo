@@ -3,22 +3,33 @@
     Product Details
   </nb-card-header>
   <nb-card-body>
-    <form #editProductForm="ngForm" (keyup)="formChange()">
-      <span class="custom-control-description">{{editingProduct.id}}</span>
+    <form #editProductForm="ngForm" (keyup)="formChange()" class="custom-add">
+      <span class="custom-control-description">Product ID</span>
+      <input class="form-control custom-add-product-input" type="text" name="productId" [(ngModel)]="editingProduct.id" #productId="ngModel" disabled>
       <span class="custom-control-description custom-add-description">Product name</span>
-      <input class="form-control custom-add-product-input" [autofocus] type="text" id="name" name="productName" [(ngModel)]="editingProduct.name" #productName="ngModel" maxlength="200"
+      <input class="form-control custom-add-product-input" [autofocus] type="text" id="name" name="productName" [(ngModel)]="editingProduct.name" #productName="ngModel"
           pattern="^[^/\\]*">
-      <span class="custom-control-description custom-add-description">Product description</span>
+      <span class="custom-control-description custom-add-description">Product Description</span>
       <input class="form-control custom-add-product-input" type="text" id="name" name="productDescription" [(ngModel)]="editingProduct.description" #productName="ngModel">
-      <span class="custom-control-description">{{editingProduct.code}}</span>
-      <span class="custom-control-description">{{editingProduct.brand}}</span>
-      <span class="custom-control-description">{{editingProduct.type}}</span>
-      <span class="custom-control-description">{{editingProduct.category}}</span>
-      <span class="custom-control-description">{{editingProduct.created_at}}</span>
-      <span class="custom-control-description">{{editingProduct.updated_at}}</span>
-
-      <button type="button" class="btn btn-outline-warning editProductButtons" (click)=cancelEditing()>Cancel</button>
-      <button type="button" class="btn btn-outline-primary" [disabled]="productName.errors || !difference" (click)="onEditProduct()">Done</button>
+      <span class="custom-control-description custom-add-description">Product Code</span>
+      <input class="form-control custom-add-product-input" type="text" name="productCode" [(ngModel)]="editingProduct.code" #productCode="ngModel" disabled>
+      <span class="custom-control-description custom-add-description">Product Brand</span>
+      <input class="form-control custom-add-product-input" type="text" name="productBrand" [(ngModel)]="editingProduct.brand" #productBrand="ngModel" disabled>
+      <span class="custom-control-description custom-add-description">Product Type</span>
+      <input class="form-control custom-add-product-input" type="text" name="productType" [(ngModel)]="editingProduct.type" #productType="ngModel" disabled>
+      <span class="custom-control-description custom-add-description">Product Category</span>
+      <input class="form-control custom-add-product-input" type="text" name="productCategory" [(ngModel)]="editingProduct.category" #productCategory="ngModel" disabled>
+      <span class="custom-control-description custom-add-description">Product Created At</span>
+      <input class="form-control custom-add-product-input" type="text" name="productCreatedAt" [(ngModel)]="editingProduct.created_at" #productCreatedAt="ngModel" disabled>
+      <span class="custom-control-description custom-add-description">Product Updated At}}</span>
+      <input class="form-control custom-add-product-input" type="text" name="productUpdatedAt" [(ngModel)]="editingProduct.updated_at" #productUpdatedAt="ngModel" disabled>
+      <div class="custom-btn-group">
+        <button type="button" class="btn btn-outline-warning" (click)=cancelEditing()>Back</button>
+        <button type="button" class="btn btn-outline-primary btn-update" [disabled]="!formChanged" (click)="onEditProduct()">Update</button>
+        <button type="button" class="btn btn-outline-danger btn-delete" (click)="onDeleteProduct()">Delete</button>
+      </div>
     </form>
   </nb-card-body>
 </nb-card>
+
+

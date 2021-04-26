@@ -7,27 +7,24 @@ a.disabled {
 }
 
 .modal-header {
-  background-color:#F37E41;
+  border: 3px solid #F37E41;
   span {
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 600;
   }
 }
 
 .modal-body {
-  background-color:#d3d3d3;
   textarea {
-    height: 10rem;
+    padding: 1rem auto;
   }
   label {
     width: auto;
+    display: block;
+    overflow-wrap: break-word;
   }
 }
 
 .modal-body.alert {
   background-color: unset;
-}
-
-.addButton {
-  margin-right: 1rem;
 }

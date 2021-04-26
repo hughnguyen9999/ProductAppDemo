@@ -3,8 +3,12 @@ import { Product } from './product/product';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalWarningComponent } from '../modal/modal-warning.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 
 export class ProductsService {
 
@@ -15,59 +19,63 @@ export class ProductsService {
   httpHeaders = new HttpHeaders().set('Content-Type', 'application/json');
 
   emptyProduct: Product = this.createEmptyProduct();
+  constructor(
+    private httpClient: HttpClient,
+    private modalService: NgbModal) { }
 
-  constructor(private httpClient: HttpClient) { }
-
-  createEmptyProduct() {
-    var product = new Product('', '', '', '', '', null, '', '', '');
-    return product;
+  createEmptyProduct(): Product {
+    return new Product('', '', '', '', '', null, '', '', '');
   }
 
   // Add
   addProduct(product: Product): Observable<any> {
-    let API_URL = `${this.apiLink}`;
-    return this.httpClient.post(API_URL, product)
+    return this.httpClient.post(this.apiLink, product)
       .pipe(
         catchError(this.handleError)
       )
   }
 
   // Get all objects
-  getProducts() {
-    return this.httpClient.get(`${this.apiLink}`);
+  getProducts(): Observable<any> {
+    return this.httpClient.get(this.apiLink);
   }
 
   // Get single object
-  getProduct(id:number): Observable<Product> {
-    let API_URL = `${this.apiLink}/${id}`;
-    return this.httpClient.get(API_URL, { headers: this.httpHeaders })
+  getProduct(code: string): Observable<Product> {
+    return this.httpClient.get(`${this.apiLink}/${code}`, { headers: this.httpHeaders })
       .pipe(map((res: any) => {
           return res || {}
         }),
-        catchError(this.handleError)
+        catchError((error) => this.handleError(error))
       )
   }
 
   // Update
-  updateProduct(product:Product): Observable<any> {
-    let API_URL = `${this.apiLink}/${product.id}`;
-    return this.httpClient.put(API_URL, product, { headers: this.httpHeaders })
+  updateProduct(product: Product): Observable<any> {
+    return this.httpClient.put(`${this.apiLink}/${product.code}`, product, { headers: this.httpHeaders })
       .pipe(
-        catchError(this.handleError)
+        catchError((error) => this.handleError(error))
       )
   }
 
   // Delete
-  deleteProduct(id:any): Observable<any> {
-    let API_URL = `${this.apiLink}/${id}`;
-    return this.httpClient.delete(API_URL, { headers: this.httpHeaders}).pipe(
-        catchError(this.handleError)
-      )
+  deleteProduct(code: string): Observable<any> {
+    return this.httpClient.delete(`${this.apiLink}/${code}`, { headers: this.httpHeaders })
+      .pipe(
+      catchError((error) => this.handleError(error))
+    )
   }
 
+  // use modal to show error
+  showErrorModal(header: string, content: string) {
+    const activeModal = this.modalService.open(ModalWarningComponent, { size: 'sm', container: 'nb-layout' }) ;
+    activeModal.componentInstance.modalHeader = header;
+    activeModal.componentInstance.modalContent = content;
+  }
 
   // Error
   handleError(error: HttpErrorResponse) {
+
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // Handle client error
@@ -76,7 +84,7 @@ export class ProductsService {
       // Handle server error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    console.log(errorMessage);
+    this.showErrorModal("Error", errorMessage);
     return throwError(errorMessage);
   }
 }

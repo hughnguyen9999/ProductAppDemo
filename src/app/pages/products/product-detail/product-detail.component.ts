@@ -4,10 +4,14 @@ import { Router } from '@angular/router';
 import { Product } from '../product/product';
 import { ShareDataService } from '../share-data.service';
 import { Observable } from 'rxjs/Observable';
+import { ProductsListComponent } from '../product-list/products-list.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
-    selector: 'product-detail',
-    templateUrl: './product-detail.component.html'
+  selector: 'product-detail',
+  styleUrls: ['../products.component.scss'],
+  templateUrl: './product-detail.component.html'
 })
 
 export class ProductDetailComponent implements OnInit {
@@ -17,44 +21,66 @@ export class ProductDetailComponent implements OnInit {
   inputDescription : string = '';
   formChanged: boolean = false;
   done: boolean = false;
-  isEmpty: boolean;
+  isEmpty: boolean = false;
   difference: boolean = false;
-  productsURL = '/products';
+  productsURL: string = '/products';
+  oldPro: Product = this.productsService.createEmptyProduct();
 
-  constructor(private productsService: ProductsService, private router: Router, private shareDataService: ShareDataService) { }
+  constructor(
+    private productsService: ProductsService,
+    private router: Router,
+    private shareDataService: ShareDataService,
+    private toastrService: NbToastrService) { }
 
   ngOnInit() {
     this.getProductToEdit();
   }
 
   // get the infor of the editing product
-  getProductToEdit() {
-    if (this.shareDataService.getData('selectedProduct')) {
-      this.productsService.getProduct(this.shareDataService.getData('selectedProduct').id)
+  getProductToEdit(): void {
+    if (typeof this.shareDataService.getData('selectedProduct') !== 'undefined') {
+      const selectedProduct = this.shareDataService.getData('selectedProduct');
+      this.productsService.getProduct(selectedProduct.code)
         .subscribe(product => {
           this.editingProduct = product;
-          this.inputName = this.editingProduct.name;
-          this.inputDescription = this.editingProduct.description
         }
       );
     }
   }
 
-  // on Done button clicked
-  onEditProduct() {
-    this.productsService.updateProduct(this.editingProduct).subscribe(newProduct =>
-      {
-        this.shareDataService.setData('selectedProduct', newProduct);
-        this.router.navigateByUrl(this.productsURL);
-      },
-        error => {
-          this.productsService.handleError(error);
+  // on Update button clicked
+  onEditProduct(): void {
+    this.productsService.updateProduct(this.editingProduct).subscribe((result: any): void =>
+    {
+      const newProduct = result.product;
+      this.shareDataService.setData('selectedProduct', newProduct);
+      this.done = true;
+      this.showToast('success', newProduct.name, 'updated');
+      this.router.navigateByUrl(this.productsURL);
+    },
+    (error: HttpErrorResponse): void => {
+        this.productsService.handleError(error);
+      }
+    );
+  }
+
+  // on Delete button clicked
+  onDeleteProduct(): void {
+    const deletedProductName = this.editingProduct.name;
+    this.productsService.deleteProduct(this.editingProduct.code).subscribe((): void =>
+    {
+      this.done = true;
+      this.showToast('success', deletedProductName, 'deleted');
+      this.router.navigateByUrl(this.productsURL);
+    },
+    (error: HttpErrorResponse): void => {
+        this.productsService.handleError(error);
       }
     );
   }
 
   // check if there is any value pending for save
-  formChange() {
+  formChange(): void {
     this.formChanged = true;
   }
 
@@ -68,8 +94,17 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  // cancel editing and back to folders page
-  cancelEditing() {
+  // cancel editing and back to products page
+  cancelEditing(): void {
     this.router.navigateByUrl(this.productsURL);
+  }
+
+  // show toast after a product has been updated or deleted successfully
+  showToast(status: string, productName: string, action: string): void {
+    var position: any = 'bottom-end';
+    this.toastrService.show(
+      'The product ' + productName + ' has been ' + action + ' successfully',
+      'Success',
+      { position, status });
   }
 }

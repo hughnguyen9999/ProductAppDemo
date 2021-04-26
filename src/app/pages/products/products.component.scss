@@ -1,12 +1,59 @@
 @import '../../@theme/styles/themes';
 
 @include nb-install-component() {
-  nb-card {
-    transform: translate3d(0, 0, 0);
+  ::ng-deep router-outlet + * {
+    display: block;
+    animation: fade 1s;
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
   }
+}
+
+// custom style
+.custom-add {
+  input {
+    margin: 0.5rem 0 1rem 0;
+  }
+}
+
+.custom-btn-group {
+  width: 100%;
+  margin-top: 1rem;
+  display: inline-block;
+  @media ( max-width: 320px ) {
+    display: grid;
+    .btn {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+  }
+
 }
 
 .custom-row {
   margin-top: 1rem;
 }
 
+.btn-update {
+  margin-left: 1rem;
+}
+
+.btn-delete {
+  float: right;
+}
+
+:host
+  ::ng-deep
+  .ngx-datatable
+  .datatable-body
+  .datatable-body-row:hover {
+    cursor: pointer;
+}
